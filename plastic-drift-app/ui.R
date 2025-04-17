@@ -23,7 +23,10 @@ shinyUI(fluidPage(
       ),
 
       br(),
-      h3("Regional Correlation Analysis"),
+        h4("Correlation of All Attributes by Region"),
+        plotOutput("all_regions_barplot"),
+      br(),
+      h3("Regional Correlation View & Analysis"),
       sidebarLayout(
         sidebarPanel(
           selectInput("selected_var_regional", "Select Regional Attribute:", 
@@ -44,7 +47,10 @@ shinyUI(fluidPage(
           plotOutput("regional_plot"),
           verbatimTextOutput("correlation_results")
         )
-      )
+      ),
+      br(),
+      plotOutput("selected_region_correlation_plot"),
+
     ),
     tabPanel("PLACEHOLDER", 
       h3("More cool stuff coming soon!")
