@@ -10,6 +10,8 @@ equirectangular_projection <- readJPEG("assets/equirectangular_projection.jpg")
 
 plot_ocean_measurements_global <- function(fill_var, title, fill_label, data) {
   ggplot() +
+    background_image(equirectangular_projection) +
+    coord_fixed(ratio = 1, xlim = c(-180, 180), ylim = c(-90, 90), expand = FALSE, clip = "on") +
     geom_point(
       data = data, aes(x = lon, y = lat, fill = !!sym(fill_var)),
       shape = 21, size = 3, alpha = 0.1, color = "black", stroke = 0.3
@@ -33,7 +35,15 @@ plot_ocean_measurements_global <- function(fill_var, title, fill_label, data) {
 }
 
 plot_ocean_measurements_regional <- function(data, fill_var, title, fill_label) {
+  lat_range_raw <- range(data$lat, na.rm = TRUE)
+  lon_range_raw <- range(data$lon, na.rm = TRUE)
+
+  # Round ranges to nearest 5: e.g. (50.1, 69.9) -> (50, 70)
+  lat_range <- c(floor(lat_range_raw[1] / 5) * 5, ceiling(lat_range_raw[2] / 5) * 5)
+  lon_range <- c(floor(lon_range_raw[1] / 5) * 5, ceiling(lon_range_raw[2] / 5) * 5)
+
   ggplot() +
+    coord_fixed(ratio = 1, xlim = lon_range, ylim = lat_range, expand = FALSE, clip = "on") +
     geom_point(
       data = data, aes(x = lon, y = lat, fill = !!sym(fill_var)),
       shape = 21, size = 3, alpha = 0.4, color = "black", stroke = 0.3
