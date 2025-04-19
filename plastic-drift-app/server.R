@@ -18,6 +18,7 @@ all_correlation_coefficients <- reactiveVal(NULL)
   correlation_data <- calculate_all_correlations(currents_and_microplastics, regions, attributes_to_correlate)
   all_correlation_coefficients(correlation_data) # Store the calculated coefficients
 }
+currents_by_buoy_time <- read.csv("datasources/currents_by_buoy_time.csv")
 
 shinyServer(function(input, output) {
   output$global_plot <- renderPlot({
@@ -95,5 +96,12 @@ shinyServer(function(input, output) {
       ) +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  })
+  output$sample_buoys <- renderPlot(
+    plot_sample_buoys(currents_by_buoy_time, input$nr_of_buoys)
+  )
+
+  output$largest_buoys <- renderPlot({
+    plot_largest_buoys(currents_by_buoy_time, input$nr_of_buoys)
   })
 })

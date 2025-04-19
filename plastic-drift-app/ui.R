@@ -52,6 +52,21 @@ shinyUI(fluidPage(
       plotOutput("selected_region_correlation_plot"),
 
     ),
+    tabPanel("Individual Buoys", 
+      h3("Individual Buoys"),
+      sidebarLayout(
+        sidebarPanel(
+          sliderInput("nr_of_buoys", "Number of Buoys:",
+                      min = 1, max = 1000, value = 30)
+        ),
+        mainPanel(
+          h4("Sample Buoys"),
+          plotOutput("sample_buoys"),
+          h4("Largest Buoys"),
+          plotOutput("largest_buoys")
+        )
+      )
+    ),
     tabPanel("PLACEHOLDER", 
       h3("More cool stuff coming soon!")
     )
