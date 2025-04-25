@@ -28,9 +28,8 @@ currents_by_buoy_time <- read.csv("datasources/currents_by_buoy_time.csv")
 shinyServer(function(input, output) {
   output$global_plot <- renderPlot({
     plot_ocean_measurements_global(
-      fill_var = input$selected_var_global,
+      selected_attribute = input$selected_var_global,
       title = paste("Global View -", input$selected_var_global),
-      fill_label = input$selected_var_global,
       data = currents_and_microplastics
     )
   })
@@ -43,10 +42,9 @@ shinyServer(function(input, output) {
     req(input$plot_button)
     region_data <- filtered_region_data()
     plot_ocean_measurements_regional(
-      data = region_data,
-      fill_var = input$selected_var_regional,
+      selected_attribute = input$selected_var_regional,
       title = paste(input$selected_region, "-", input$selected_var_regional),
-      fill_label = input$selected_var_regional
+      data = region_data,
     )
   })
 

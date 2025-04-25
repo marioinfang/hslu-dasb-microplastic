@@ -8,15 +8,15 @@ library(purrr)
 equirectangular_projection <- readJPEG("assets/equirectangular_projection.jpg")
 
 
-plot_ocean_measurements_global <- function(fill_var, title, fill_label, data) {
+plot_ocean_measurements_global <- function(selected_attribute, title, data) {
   ggplot() +
     background_image(equirectangular_projection) +
     coord_fixed(ratio = 1, xlim = c(-180, 180), ylim = c(-90, 90), expand = FALSE, clip = "on") +
     geom_point(
-      data = data, aes(x = lon, y = lat, fill = !!sym(fill_var)),
+      data = data, aes(x = lon, y = lat, fill = !!sym(selected_attribute)),
       shape = 21, size = 3, alpha = 0.1, color = "black", stroke = 0.3
     ) +
-    scale_fill_viridis_c(name = fill_label, option = "C") +
+    scale_fill_viridis_c(name = selected_attribute, option = "C") +
     geom_point(
       data = data[!is.na(data$Concentration.Class), ],
       aes(x = mp_lon, y = mp_lat, color = Concentration.Class),
@@ -34,7 +34,7 @@ plot_ocean_measurements_global <- function(fill_var, title, fill_label, data) {
     theme(legend.position = "right")
 }
 
-plot_ocean_measurements_regional <- function(data, fill_var, title, fill_label) {
+plot_ocean_measurements_regional <- function(selected_attribute, title, data) {
   lat_range_raw <- range(data$lat, na.rm = TRUE)
   lon_range_raw <- range(data$lon, na.rm = TRUE)
 
@@ -48,7 +48,7 @@ plot_ocean_measurements_regional <- function(data, fill_var, title, fill_label) 
       data = data, aes(x = lon, y = lat, fill = !!sym(fill_var)),
       shape = 21, size = 3, alpha = 0.4, color = "black", stroke = 0.3
     ) +
-    scale_fill_viridis_c(name = fill_label, option = "C") +
+    scale_fill_viridis_c(name = selected_attribute, option = "C") +
     geom_point(
       data = data[!is.na(data$Concentration.Class), ],
       aes(x = mp_lon, y = mp_lat, color = Concentration.Class),
