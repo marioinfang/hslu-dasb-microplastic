@@ -141,7 +141,71 @@ shinyUI(fluidPage(
         mainPanel(
           plotOutput("model3_prediction_plot")
         )
-      )
+      ),
+      h3("Interaction Models"),
+      verbatimTextOutput("interaction_model_definitions"),
+      fluidRow(
+        column(
+          6,
+          h4("ANOVA Comparison of Interaction Models"),
+          tableOutput("anova_interaction_table")
+        ),
+        column(
+          3,
+          h4("AIC Values (Interaction)"),
+          tableOutput("aic_interaction_table")
+        ),
+        column(
+          3,
+          h4("BIC Values (Interaction)"),
+          tableOutput("bic_interaction_table")
+        )
+      ),
+      h3("Best Interaction Model Evaluation"),
+      fluidRow(
+        column(
+          6,
+          h4("Confusion Matrix (Interaction)"),
+          tableOutput("confusion_matrix_interaction_test")
+        ),
+        column(
+          6,
+          h4("Test Set Accuracy (Interaction)"),
+          verbatimTextOutput("interaction_model_evaluation")
+        )
+      ),
+      h4("Predicted vs. Actual Concentration (Interaction Model)"),
+      plotOutput("interaction_prediction_plot"),
+      h4("Interaction Effect Plot"),
+      plotOutput("interaction_plot"),
+      h3("Transformation"),
+      sidebarLayout(
+        sidebarPanel(
+          selectInput("selected_predictor_hist", "Select Predictor:",
+            choices = c("measurement_count", "log(measurement_count)", "speed_sum", "log(speed_sum)", "buoy_count", "log(buoy_count)"),
+            selected = "measurement_count"
+          )
+        ),
+        mainPanel(
+          plotOutput("predictor_histogram")
+        )
+      ),
+      h3("Transformed Model Evaluation"),
+      verbatimTextOutput("combined_model_definitions"),
+      fluidRow(
+        column(
+          6,
+          h4("Transformed Model Accuracy"),
+          verbatimTextOutput("transformed_model_evaluation")
+        ),
+        column(
+          6,
+          h4("Transformed Model Confusion Matrix"),
+          tableOutput("transformed_model_confusion_matrix")
+        )
+      ),
+      h4("Predicted vs. Actual Concentration (Transformed Model)"),
+      plotOutput("transformed_model_prediction_plot")
     ),
     tabPanel(
       "PLACEHOLDER",

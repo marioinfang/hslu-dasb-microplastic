@@ -207,4 +207,91 @@ shinyServer(function(input, output) {
     new_data_predict <- generate_prediction_data(model_3, test_data, selected_predictor)
     create_prediction_plot(model_3, new_data_predict, selected_predictor)
   })
+
+  output$interaction_model_definitions <- renderPrint({
+    model_texts <- c(
+      paste("model_interaction_1: Predictors = ", paste(get_predictors(model_interaction_1), collapse = ", ")),
+      paste("model_interaction_2: Predictors = ", paste(get_predictors(model_interaction_2), collapse = ", ")),
+      paste("model_interaction_3: Predictors = ", paste(get_predictors(model_interaction_3), collapse = ", ")),
+      paste("model_interaction_4: Predictors = ", paste(get_predictors(model_interaction_4), collapse = ", "))
+    )
+    cat(paste(model_texts, collapse = "\n\n"), sep = "")
+  })
+
+  output$anova_interaction_table <- renderTable({
+    anova_df <- as.data.frame(anova_interaction_output)
+    anova_df$Model <- rownames(anova_df)
+    rownames(anova_df) <- NULL
+    anova_df <- anova_df %>% select(Model, everything())
+    return(anova_df)
+  })
+
+  output$aic_interaction_table <- renderTable({
+    data.frame(
+      Model = c("model_3", "model_interaction_1", "model_interaction_2", "model_interaction_3", "model_interaction_4"),
+      AIC = aic_interaction_values$AIC
+    )
+  })
+
+  output$bic_interaction_table <- renderTable({
+    data.frame(
+      Model = c("model_3", "model_interaction_1", "model_interaction_2", "model_interaction_3", "model_interaction_4"),
+      BIC = bic_interaction_values$BIC
+    )
+  })
+
+  output$interaction_model_evaluation <- renderPrint({
+    evaluation_results <- evaluate_interaction_model(best_interactive_model, test_data)
+    cat(paste("Accuracy of Best Interaction Model on Test Data:", round(evaluation_results$accuracy, 3), "\n"))
+  })
+
+  output$confusion_matrix_interaction_test <- renderTable({
+    evaluation_results <- evaluate_interaction_model(best_interactive_model, test_data)
+    as.data.frame.matrix(evaluation_results$confusion_matrix)
+  })
+
+  output$interaction_prediction_plot <- renderPlot({
+    plot_interaction_predictions(best_interactive_model, test_data)
+  })
+
+  output$interaction_plot <- renderPlot({
+    plot_interaction_effects(best_interactive_model, test_data)
+  })
+
+  output$predictor_histogram <- renderPlot({
+    selected_predictor <- input$selected_predictor_hist
+    plot_predictor_histogram(train_data, selected_predictor)
+  })
+
+  output$transformed_model_evaluation <- renderPrint({
+    predicted_classes_transformed_test <- predict(model_transformed_extended, newdata = test_data)
+    accuracy_transformed_test <- mean(predicted_classes_transformed_test == test_data$Concentration.Class)
+    cat(paste("Accuracy of Transformed Model on Test Data:", round(accuracy_transformed_test, 3), "\n"))
+  })
+
+  output$transformed_model_prediction_plot <- renderPlot({
+    predicted_classes_transformed_test <- predict(model_transformed_extended, newdata = test_data)
+    ggplot(test_data, aes(x = measurement_count, fill = predicted_classes_transformed_test)) +
+      geom_density(alpha = 0.5) +
+      facet_wrap(~Concentration.Class) +
+      labs(
+        title = "Predicted vs. Actual Concentration by Measurement Count (Transformed Model)",
+        x = "Measurement Count",
+        y = "Density",
+        fill = "Predicted Class"
+      )
+  })
+
+  output$transformed_model_confusion_matrix <- renderTable({
+    predicted_classes_transformed_test <- predict(model_transformed_extended, newdata = test_data)
+    confusion_matrix_transformed <- table(predicted_classes_transformed_test, test_data$Concentration.Class)
+    as.data.frame.matrix(confusion_matrix_transformed)
+  })
+
+  output$combined_model_definitions <- renderPrint({
+    model_texts <- c(
+      paste("model_transformed_extended: Predictors = ", paste(get_predictors(model_transformed_extended), collapse = ", ")) # added model
+    )
+    cat(paste(model_texts, collapse = "\n\n"), sep = "")
+  })
 })
