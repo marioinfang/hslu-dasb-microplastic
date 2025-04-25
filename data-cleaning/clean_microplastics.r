@@ -1,3 +1,4 @@
+library(arrow)
 library(dplyr)
 
 df_left <- read.csv("data-cleaning/Marine Microplastic Concentrations-left.csv", stringsAsFactors = FALSE)
@@ -14,4 +15,4 @@ names(df_combined)[names(df_combined) == "Microplastics.Measurement..density."] 
 
 colnames(df_combined)
 
-write.csv(df_combined, "plastic-drift-app/datasources/cleaned_microplastics.csv", row.names = FALSE)
+write_parquet(df_combined, "plastic-drift-app/datasources/cleaned_microplastics.parquet")

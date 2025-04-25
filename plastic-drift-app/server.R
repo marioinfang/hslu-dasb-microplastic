@@ -1,3 +1,4 @@
+library(arrow)
 library(shiny)
 library(ggplot2)
 library(viridis)
@@ -10,7 +11,7 @@ source("helpers-visualize-attributes.R")
 source("helpers-visualize-correlations.R")
 source("helpers-visualize-buoyes.R")
 
-currents_and_microplastics <- read.csv("datasources/currents_with_microplastics.csv")
+currents_and_microplastics <- read_parquet("datasources/currents_with_microplastics.parquet")
 regions <- c(
   "North Atlantic", "Mediterranean", "North Pacific",
   "Northern North Atlantic", "Mid Atlantic (Upper South America)",
@@ -23,7 +24,7 @@ all_correlation_coefficients <- reactiveVal(NULL)
   correlation_data <- calculate_all_correlations(currents_and_microplastics, regions, attributes_to_correlate)
   all_correlation_coefficients(correlation_data) # Store the calculated coefficients
 }
-currents_by_buoy_time <- read.csv("datasources/currents_by_buoy_time.csv")
+currents_by_buoy_time <- read_parquet("datasources/currents_by_buoy_time.parquet")
 
 shinyServer(function(input, output) {
   output$global_plot <- renderPlot({

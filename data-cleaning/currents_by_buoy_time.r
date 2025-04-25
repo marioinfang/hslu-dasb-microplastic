@@ -1,4 +1,5 @@
 library(dplyr)
+library(arrow)
 
 currents <- read.table("data-cleaning/buoydata_15001_jul24.dat", header=TRUE)
 colnames(currents) <- c("id", "something", "time", "date", "lat", "lon", "t", "ve", "vn", "speed", "varlat", "varlon", "vart")
@@ -37,4 +38,4 @@ currents_daily <- daily_currents %>%
 head(currents_daily, 5)
 nrow(currents_daily)
 summary(currents_daily)
-write.csv(currents_daily, "plastic-drift-app/datasources/currents_by_buoy_time.csv", row.names = FALSE)
+write_parquet(currents_daily, "plastic-drift-app/datasources/currents_by_buoy_time.parquet")
