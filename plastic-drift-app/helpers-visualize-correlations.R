@@ -10,8 +10,9 @@ calculate_all_correlations <- function(data, regions, attributes) {
     }
 
     region_data$Concentration.Class <- factor(region_data$Concentration.Class,
-                                               levels = c("Very Low", "Low", "Medium", "High", "Very High"),
-                                               labels = 1:5)
+      levels = c("Very Low", "Low", "Medium", "High", "Very High"),
+      labels = 1:5
+    )
 
     region_coeffs_df <- data.frame(matrix(ncol = 2, nrow = 0))
     colnames(region_coeffs_df) <- c("Attribute", "Correlation")
