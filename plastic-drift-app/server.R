@@ -4,6 +4,7 @@ library(viridis)
 library(dplyr)
 source("helpers-visualize-attributes.R")
 source("helpers-visualize-correlations.R")
+source("helpers-visualize-buoyes.R")
 
 currents_and_microplastics <- read.csv("datasources/currents_with_microplastics.csv")
 regions <- c(
