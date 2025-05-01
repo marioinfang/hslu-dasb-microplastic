@@ -10,6 +10,7 @@ source("helpers-visualize-forecasting.R")
 source("helpers-visualize-attributes.R")
 source("helpers-visualize-correlations.R")
 source("helpers-visualize-buoyes.R")
+source("helpers-visualize-movement.R")
 
 currents_and_microplastics <- read_parquet("datasources/currents_with_microplastics.parquet")
 regions <- c(
@@ -324,6 +325,22 @@ output$model_prediction_plot <- renderPlot({
     data.frame(
       Model = c("model_3", "model_interaction_4", "model_transformed_extended"),
       BIC = bic_all_values$BIC
+  )})
+  
+  ############################################################
+  ####################### Buoys movement #####################
+  ############################################################
+  
+  output$top_buoys_movement <- renderPlot({
+    plot_buoyes_movement_top_microplastic(
+      number = input$nr_of_buoys_for_movement_top
+    )
+  })
+  
+  output$bottom_buoys_movement <- renderPlot({
+    plot_buoyes_movement_bottom_microplastic(
+      number = input$nr_of_buoys_for_movement_top
     )
   })
 })
+
