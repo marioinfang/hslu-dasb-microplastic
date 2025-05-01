@@ -17,9 +17,9 @@ plot_ocean_measurements_global <- function(selected_attribute, show_microplastic
         data = data, aes(x = lon, y = lat, fill = !!sym(selected_attribute)),
         shape = 21, size = 3, alpha = 0.1, color = "black", stroke = 0.3
       ) +
-    scale_fill_viridis_c(name = selected_attribute, option = "C") +
+    scale_fill_viridis_c(name = paste("Currents: ", selected_attribute), option = "C") +
     scale_color_manual(
-      name = "Density Class",
+      name = "Microplastic Density Class",
       values = c(
         "Very Low" = "white", "Low" = "green",
         "Medium" = "blue", "High" = "orange", "Very High" = "red"
@@ -55,14 +55,14 @@ plot_ocean_measurements_regional <- function(selected_attribute, title, data) {
       data = data, aes(x = lon, y = lat, fill = !!sym(fill_var)),
       shape = 21, size = 3, alpha = 0.4, color = "black", stroke = 0.3
     ) +
-    scale_fill_viridis_c(name = selected_attribute, option = "C") +
+    scale_fill_viridis_c(name = paste("Currents: ", selected_attribute), option = "C") +
     geom_point(
       data = data[!is.na(data$Concentration.Class), ],
       aes(x = mp_lon, y = mp_lat, color = Concentration.Class),
       alpha = 0.7, size = 1
     ) +
     scale_color_manual(
-      name = "Density Class",
+      name = "Microplastic Density Class",
       values = c(
         "Very Low" = "white", "Low" = "green",
         "Medium" = "blue", "High" = "orange", "Very High" = "red"
