@@ -18,7 +18,8 @@ shinyUI(fluidPage(
               "Buoy Count" = "buoy_count"
             ),
             selected = "measurement_count"
-          )
+          ),
+          checkboxInput("show_microplastic", "Show Microplastic", value = TRUE)
         ),
         mainPanel(
           plotOutput("global_plot")

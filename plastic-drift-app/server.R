@@ -30,6 +30,7 @@ shinyServer(function(input, output) {
   output$global_plot <- renderPlot({
     plot_ocean_measurements_global(
       selected_attribute = input$selected_var_global,
+      show_microplastic = input$show_microplastic,
       title = paste("Global View -", input$selected_var_global),
       data = currents_and_microplastics
     )

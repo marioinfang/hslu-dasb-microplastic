@@ -8,20 +8,16 @@ library(purrr)
 equirectangular_projection <- readJPEG("assets/equirectangular_projection.jpg")
 
 
-plot_ocean_measurements_global <- function(selected_attribute, title, data) {
-  ggplot() +
+plot_ocean_measurements_global <- function(selected_attribute, show_microplastic, title, data) {
+  # Initialize the plot
+  plot <- ggplot() +
     background_image(equirectangular_projection) +
     coord_fixed(ratio = 1, xlim = c(-180, 180), ylim = c(-90, 90), expand = FALSE, clip = "on") +
     geom_point(
-      data = data, aes(x = lon, y = lat, fill = !!sym(selected_attribute)),
-      shape = 21, size = 3, alpha = 0.1, color = "black", stroke = 0.3
-    ) +
+        data = data, aes(x = lon, y = lat, fill = !!sym(selected_attribute)),
+        shape = 21, size = 3, alpha = 0.1, color = "black", stroke = 0.3
+      ) +
     scale_fill_viridis_c(name = selected_attribute, option = "C") +
-    geom_point(
-      data = data[!is.na(data$Concentration.Class), ],
-      aes(x = mp_lon, y = mp_lat, color = Concentration.Class),
-      alpha = 0.7, size = 0.7
-    ) +
     scale_color_manual(
       name = "Density Class",
       values = c(
@@ -32,6 +28,17 @@ plot_ocean_measurements_global <- function(selected_attribute, title, data) {
     theme_minimal() +
     labs(title = title, x = "Longitude", y = "Latitude") +
     theme(legend.position = "right")
+
+  if (show_microplastic) {
+    plot <- plot +
+      geom_point(
+        data = data[!is.na(data$Concentration.Class), ],
+        aes(x = mp_lon, y = mp_lat, color = Concentration.Class),
+        alpha = 0.7, size = 0.7
+      )
+  }
+
+  plot
 }
 
 plot_ocean_measurements_regional <- function(selected_attribute, title, data) {
