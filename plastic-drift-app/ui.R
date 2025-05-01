@@ -208,6 +208,18 @@ shinyUI(fluidPage(
       plotOutput("transformed_model_prediction_plot")
     ),
     tabPanel(
+      "Buoys movement",
+      h3("Movement analyse of buoys"),
+      h4("Top"),
+      sliderInput("nr_of_buoys_for_movement_top", "Number of Buoys:",
+                  min = 1, max = 40, value = 10
+      ),
+      plotOutput("top_buoys_movement"),
+      br(),
+      h4("Bottom"),
+      plotOutput("bottom_buoys_movement"),
+    ),
+    tabPanel(
       "PLACEHOLDER",
       h3("More cool stuff coming soon!")
     ),

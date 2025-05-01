@@ -9,6 +9,7 @@ source("helpers-visualize-forecasting.R")
 source("helpers-visualize-attributes.R")
 source("helpers-visualize-correlations.R")
 source("helpers-visualize-buoyes.R")
+source("helpers-visualize-movement.R")
 
 currents_and_microplastics <- read.csv("datasources/currents_with_microplastics.csv")
 regions <- c(
@@ -293,5 +294,21 @@ shinyServer(function(input, output) {
       paste("model_transformed_extended: Predictors = ", paste(get_predictors(model_transformed_extended), collapse = ", ")) # added model
     )
     cat(paste(model_texts, collapse = "\n\n"), sep = "")
+  })
+  
+  ############################################################
+  ####################### Buoys movement #####################
+  ############################################################
+  
+  output$top_buoys_movement <- renderPlot({
+    plot_buoyes_movement_top_microplastic(
+      number = input$nr_of_buoys_for_movement_top
+    )
+  })
+  
+  output$bottom_buoys_movement <- renderPlot({
+    plot_buoyes_movement_bottom_microplastic(
+      number = input$nr_of_buoys_for_movement_top
+    )
   })
 })
