@@ -114,8 +114,10 @@ shinyUI(fluidPage(
           tableOutput("bic_table")
         )
       ),
-      h5("Based on the model comparisons, the boxplots and domain knowledge, the predictors used in model 3 will be picked and evaluated."),
-      h3("Linear Model 3 Evaluation"),
+      h3("Linear Model Evaluation"),
+      selectInput("selected_model", "Choose a Model:",
+            choices = c("Model 3" = "model_3", "Model 5" = "model_5"),
+            selected = "model_3"),
       fluidRow(
         column(
           6,
@@ -130,17 +132,16 @@ shinyUI(fluidPage(
       ),
       h4("Predicted vs. Actual Concentration"),
       plotOutput("prediction_density_plot_test"),
-      h4("Model 3: Predicted Probability Plot"),
+      h4("Predicted Probability Plot"),
       sidebarLayout(
-        sidebarPanel(
-          selectInput("selected_predictor_model3", "Select Predictor:",
-            choices = c("measurement_count", "speed_sum", "buoy_count"),
-            selected = "measurement_count"
-          )
-        ),
-        mainPanel(
-          plotOutput("model3_prediction_plot")
-        )
+  sidebarPanel(
+    selectInput("selected_predictor", "Select Predictor:",
+                choices = c("measurement_count", "speed_sum", "buoy_count", "speed_avg"),
+                selected = "measurement_count")
+  ),
+  mainPanel(
+    plotOutput("model_prediction_plot")
+  )
       ),
       h3("Interaction Models"),
       verbatimTextOutput("interaction_model_definitions"),
@@ -204,6 +205,22 @@ shinyUI(fluidPage(
           tableOutput("transformed_model_confusion_matrix")
         )
       ),
+      fluidRow(
+        column(
+          6,
+          h4("ANOVA Comparison of Models"),
+          tableOutput("anova_all_table")
+        ),
+        column(
+          3,
+          h4("AIC Values"),
+          tableOutput("aic_all_table")
+        ),
+        column(
+          3,
+          h4("BIC Values"),
+          tableOutput("bic_all_table")
+        )),
       h4("Predicted vs. Actual Concentration (Transformed Model)"),
       plotOutput("transformed_model_prediction_plot")
     ),

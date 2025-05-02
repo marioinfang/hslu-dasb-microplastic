@@ -19,10 +19,12 @@ test_data$Concentration.Class <- factor(test_data$Concentration.Class, levels = 
 
 model_1 <- multinom(Concentration.Class ~ measurement_count, data = train_data)
 model_2 <- multinom(Concentration.Class ~ measurement_count + speed_sum, data = train_data)
-model_3 <- multinom(Concentration.Class ~ measurement_count + speed_sum + buoy_count, data = train_data)
-model_4 <- multinom(Concentration.Class ~ measurement_count + speed_sum + buoy_count +  ve_avg + vn_avg, data = train_data)
-model_5 <- multinom(Concentration.Class ~ measurement_count + speed_sum + buoy_count +  lat + lon, data = train_data)
-model_6 <- multinom(Concentration.Class ~ measurement_count + speed_sum + buoy_count +  ve_avg + vn_avg + lat + lon, data = train_data)
+model_3 <- multinom(Concentration.Class ~ measurement_count + speed_sum + buoy_count +  speed_avg, data = train_data)
+model_4 <- multinom(Concentration.Class ~ measurement_count + speed_sum + speed_avg, data = train_data)
+model_5 <- multinom(Concentration.Class ~ measurement_count + speed_sum + buoy_count, data = train_data)
+model_6 <- multinom(Concentration.Class ~ measurement_count + speed_sum + buoy_count +  ve_avg + vn_avg, data = train_data)
+model_7 <- multinom(Concentration.Class ~ measurement_count + speed_sum + buoy_count +  lat + lon, data = train_data)
+model_8 <- multinom(Concentration.Class ~ measurement_count + speed_sum + buoy_count +  ve_avg + vn_avg + lat + lon, data = train_data)
 
 model_interaction_1 <- multinom(Concentration.Class ~ measurement_count * speed_sum, data = train_data)
 model_interaction_2 <- multinom(Concentration.Class ~ measurement_count * buoy_count * speed_sum, data = train_data)
@@ -32,10 +34,10 @@ model_interaction_4 <- multinom(Concentration.Class ~ measurement_count * speed_
 model_transformed_extended <- multinom(Concentration.Class ~ log(measurement_count) * poly(speed_sum, 2) + buoy_count, data = train_data)
 
 # linear models
-anova_output <- anova(model_1, model_2, model_3, model_4, model_5, model_6)
+anova_output <- anova(model_1, model_2, model_3, model_4, model_5, model_6, model_7, model_8)
 
-aic_values <- AIC(model_1, model_2, model_3, model_4, model_5, model_6)
-bic_values <- BIC(model_1, model_2, model_3, model_4, model_5, model_6)
+aic_values <- AIC(model_1, model_2, model_3, model_4, model_5, model_6, model_7, model_8)
+bic_values <- BIC(model_1, model_2, model_3, model_4, model_5, model_6, model_7, model_8)
 
 get_predictors <- function(model) {
   formula_str <- as.character(formula(model))
@@ -87,6 +89,12 @@ aic_interaction_values <- AIC(model_3, model_interaction_1, model_interaction_2,
 bic_interaction_values <- BIC(model_3, model_interaction_1, model_interaction_2, model_interaction_3, model_interaction_4)
 
 best_interactive_model <- model_interaction_4
+
+# Extended
+anova_all_output <- anova(model_3, model_interaction_4, model_transformed_extended)
+
+aic_all_values <- AIC(model_3, model_interaction_4, model_transformed_extended)
+bic_all_values <- BIC(model_3, model_interaction_4, model_transformed_extended)
 
 evaluate_interaction_model <- function(model, test_data) {
   predicted_classes_interaction_test <- predict(model, newdata = test_data)

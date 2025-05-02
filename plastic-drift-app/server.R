@@ -147,7 +147,9 @@ shinyServer(function(input, output) {
       paste("model_3: Predictors = ", paste(get_predictors(model_3), collapse = ", ")),
       paste("model_4: Predictors = ", paste(get_predictors(model_4), collapse = ", ")),
       paste("model_5: Predictors = ", paste(get_predictors(model_5), collapse = ", ")),
-      paste("model_6: Predictors = ", paste(get_predictors(model_6), collapse = ", "))
+      paste("model_6: Predictors = ", paste(get_predictors(model_6), collapse = ", ")),
+      paste("model_7: Predictors = ", paste(get_predictors(model_7), collapse = ", ")),
+      paste("model_8: Predictors = ", paste(get_predictors(model_8), collapse = ", "))
     )
     cat(paste(model_texts, collapse = "\n\n"), sep = "")
   })
@@ -167,31 +169,39 @@ shinyServer(function(input, output) {
 
   output$aic_table <- renderTable({
     data.frame(
-      Model = 1:6,
+      Model = 1:8,
       AIC = aic_values$AIC
     )
   })
   output$bic_table <- renderTable({
     data.frame(
-      Model = 1:6,
+      Model = 1:8,
       BIC = bic_values$BIC
     )
   })
 
+  selected_model_obj <- reactive({
+    if (input$selected_model == "model_3") {
+      model_3
+    } else {
+      model_5
+    }
+  })
+
   output$confusion_matrix_test <- renderTable({
-    predicted_classes_test <- predict(model_3, newdata = test_data)
+    predicted_classes_test <- predict(selected_model_obj(), newdata = test_data)
     confusion_matrix <- table(predicted_classes_test, test_data$Concentration.Class)
-    as.data.frame.matrix(confusion_matrix) # Convert to data frame for tableOutput
+    as.data.frame.matrix(confusion_matrix)
   })
 
   output$accuracy_test <- renderPrint({
-    predicted_classes_test <- predict(model_3, newdata = test_data)
+    predicted_classes_test <- predict(selected_model_obj(), newdata = test_data)
     accuracy_test <- mean(predicted_classes_test == test_data$Concentration.Class)
-    cat(paste("Accuracy of Model 3 on Test Data:", round(accuracy_test, 3), "\n"))
+    cat(paste("Accuracy of Model on Test Data:", round(accuracy_test, 3), "\n"))
   })
 
   output$prediction_density_plot_test <- renderPlot({
-    predicted_classes_test <- predict(model_3, newdata = test_data)
+    predicted_classes_test <- predict(selected_model_obj(), newdata = test_data)
     ggplot(test_data, aes(x = measurement_count, fill = predicted_classes_test)) +
       geom_density(alpha = 0.5) +
       facet_wrap(~Concentration.Class) +
@@ -202,11 +212,11 @@ shinyServer(function(input, output) {
         fill = "Predicted Class"
       )
   })
-  output$model3_prediction_plot <- renderPlot({
-    selected_predictor <- input$selected_predictor_model3
-    new_data_predict <- generate_prediction_data(model_3, test_data, selected_predictor)
-    create_prediction_plot(model_3, new_data_predict, selected_predictor)
-  })
+output$model_prediction_plot <- renderPlot({
+  selected_predictor <- input$selected_predictor
+  new_data_predict <- generate_prediction_data(selected_model_obj(), test_data, selected_predictor)
+  create_prediction_plot(selected_model_obj(), new_data_predict, selected_predictor)
+})
 
   output$interaction_model_definitions <- renderPrint({
     model_texts <- c(
@@ -293,5 +303,27 @@ shinyServer(function(input, output) {
       paste("model_transformed_extended: Predictors = ", paste(get_predictors(model_transformed_extended), collapse = ", ")) # added model
     )
     cat(paste(model_texts, collapse = "\n\n"), sep = "")
+  })
+
+    output$anova_all_table <- renderTable({
+    anova_df <- as.data.frame(anova_all_output)
+    anova_df$Model <- rownames(anova_df)
+    rownames(anova_df) <- NULL
+    anova_df <- anova_df %>% select(Model, everything())
+    return(anova_df)
+  })
+
+  output$aic_all_table <- renderTable({
+    data.frame(
+      Model = c("model_3", "model_interaction_4", "model_transformed_extended"),
+      AIC = aic_all_values$AIC
+    )
+  })
+
+  output$bic_all_table <- renderTable({
+    data.frame(
+      Model = c("model_3", "model_interaction_4", "model_transformed_extended"),
+      BIC = bic_all_values$BIC
+    )
   })
 })
