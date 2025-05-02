@@ -1,8 +1,10 @@
+library(arrow)
 library(hexbin)
 library(dplyr)
 library(FNN)
 
-currents <- read.table("buoydata_15001_jul24.dat",
+
+currents <- read.table("data-cleaning/buoydata_15001_jul24.dat",
            header=TRUE)
 colnames(currents) <- c("id", "something", "time", "date", "lat", "lon", "t", "ve", "vn", "speed", "varlat", "varlon", "vart")
 currents <- subset(currents, select = -c(something, varlat, varlon, vart) )
@@ -51,4 +53,18 @@ currents_binned <- left_join(bin_centers, currents_binned, by = "bin_id")
 # TODO: is this necessary? -> rather remove those
 currents_binned[is.na(currents_binned)] <- 0
 
-write.csv(currents_binned, "plastic-drift-app/datasources/binned_currents.csv", row.names = FALSE)
+currents_binned_table <- arrow_table(
+  currents_binned,
+  schema = schema(
+    bin_id = int32(),
+    lon = double(),
+    lat = double(),
+    speed_sum = double(),
+    speed_avg = double(),
+    ve_avg = double(),
+    vn_avg = double(),
+    buoy_count = int32(),
+    measurement_count = int32()
+  )
+)
+write_parquet(currents_binned_table, "plastic-drift-app/datasources/binned_currents.parquet")

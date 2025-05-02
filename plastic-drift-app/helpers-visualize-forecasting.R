@@ -2,9 +2,10 @@ library(ggplot2)
 library(dplyr)
 library(nnet)
 library(tidyr)
+library(arrow)
 
 # get, split, train
-linked_data <- read.csv("datasources/currents_with_microplastics.csv")
+linked_data <- read_parquet("datasources/currents_with_microplastics.parquet")
 
 linked_data <- linked_data %>%
   filter((lon >= -180 & lon <= -120) & lat >= 5 & lat <= 40)
