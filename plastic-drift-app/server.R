@@ -339,7 +339,7 @@ output$model_prediction_plot <- renderPlot({
   
   output$bottom_buoys_movement <- renderPlot({
     plot_buoyes_movement_bottom_microplastic(
-      number = input$nr_of_buoys_for_movement_top
+      number = input$nr_of_buoys_for_movement_bottom
     )
   })
 })
